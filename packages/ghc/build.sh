@@ -8,7 +8,7 @@ TERMUX_PKG_DEPENDS="binutils, clang, iconv, libffi, llvm, ncurses"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_NO_STATICSPLIT=true
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS=" --disable-ld-override --build=x86_64-unknown-linux --host=x86_64-unknown-linux"
-TERMUX_PKG_BLACKLISTED_ARCHES="arm, i686, x86_64"
+TERMUX_PKG_BLACKLISTED_ARCHES="i686, x86_64"
 
 DYNAMIC_GHC_PROGRAMS=NO
 
@@ -25,6 +25,8 @@ termux_step_pre_configure() {
 	# Combine PIE and -Wl,-r together, and the linker will tell you those flags are mutually exclusive.
 	# This poses a problem as we need both. If you let the compiler handle it, then apparently all's well.
 	sed -i 's/"-Wl,-r"/"-r"/' compiler/main/DriverPipeline.hs
+
+	sed -i 's/armv7-unknown-linux-androideabi/arm-unknown-linux-androideabi/' llvm-targets
 
 	cp mk/build.mk.sample mk/build.mk
 	cat >> mk/build.mk <<-EOF
